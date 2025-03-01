@@ -36,7 +36,7 @@ with st.sidebar:
 
     # Date Selection (Moved back to Sidebar)
     st.markdown("<h3 style='font-size:18px;'>📅 Select Date Range</h3>", unsafe_allow_html=True)
-    start_date = st.date_input("Start Date", datetime.date(2020, 1, 1))
+    start_date = st.date_input("Start Date", datetime.date(2005, 1, 1))
     end_date = st.date_input("End Date", datetime.date.today())
 
     # --- Market Trends (Only for Top Stocks) ---
@@ -114,14 +114,14 @@ timeframe = st.radio(
 
 # Fetch Stock Data
 @st.cache_data
-def get_stock_data(ticker):
+def get_stock_data(ticker, st, ed):
     df = stock_price[(stock_price["ticker"] == ticker) & 
-                     (stock_price["date"] >= pd.Timestamp(start_date)) & 
-                     (stock_price["date"] <= pd.Timestamp(end_date))]
+                     (stock_price["date"] >= pd.Timestamp(st)) & 
+                     (stock_price["date"] <= pd.Timestamp(ed))]
     df = df.sort_values("date").reset_index(drop=True)
     return df
 
-data = get_stock_data(selected_ticker)
+data = get_stock_data(selected_ticker, start_date, end_date)
 
 # Filter data based on selected timeframe
 end_date = data["date"].max()
