@@ -4,7 +4,6 @@
 
 [![python](https://img.shields.io/badge/Python-FFD43B?style=for-the-badge&logo=python&logoColor=blue)](https://www.python.org/)
 [![tf](https://img.shields.io/badge/TensorFlow-FF6F00?style=for-the-badge&logo=tensorflow&logoColor=white)](https://www.tensorflow.org/)
-[![pytorce](https://img.shields.io/badge/PyTorch-EE4C2C?style=for-the-badge&logo=pytorch&logoColor=white)](https://pytorch.org/)
 [![streamlit](https://img.shields.io/badge/Streamlit-FF4B4B?style=for-the-badge&logo=Streamlit&logoColor=white)](https://streamlit.io/)
 [![yfinance](https://img.shields.io/badge/Yfinance-6001D2?style=for-the-badge&logo=&logoColor=white)](https://yfinance-python.org/)
 [![pandas](https://img.shields.io/badge/Pandas-2C2D72?style=for-the-badge&logo=pandas&logoColor=white)](https://pandas.pydata.org/)
@@ -41,4 +40,4 @@ Apart from market data, we did features engineering, which could be potentially 
 Our model is based on Double Deep Q-Network (DDQN), which comprises of 3 hidden layers of size 256 and one LSTMs layer.
 
 ## Testing
-We used backtesting to test our trading strategy by simulating how our model perform in the real market in historical data periods. For simplicity, we utilized [Backtrader](https://www.backtrader.com/), a 
+We used backtesting to test our trading strategy by simulating how our model perform in the real market in historical data periods. For simplicity, we utilized [Backtrader](https://www.backtrader.com/), a Python library for backtesting.
