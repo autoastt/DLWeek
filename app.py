@@ -22,7 +22,7 @@ top_stocks = ["AAPL", "INTC", "MSFT", "GOOGL", "CSCO", "TSLA", "NVDA", "AMZN", "
 ticker_display = {row.Ticker: f"{row.Ticker} - {row.Company}" for _, row in stock_df.iterrows()}
 
 # Set up Streamlit page
-st.set_page_config(page_title="ThorEMore - AI Trading Dashboard", layout="wide")
+st.set_page_config(page_title="ThorEMore - AI Trading Dashboard", layout="wide", page_icon="assets/logo.png")
 
 # --- Sidebar Layout ---
 with st.sidebar:
