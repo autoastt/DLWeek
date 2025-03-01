@@ -34,6 +34,11 @@ with st.sidebar:
     st.markdown("<h3 style='font-size:18px;'>📌 Select Stock for Analysis</h3>", unsafe_allow_html=True)
     ticker = st.selectbox("Choose a Stock:", tickers_list, format_func=lambda x: ticker_display[x])
 
+    # Date Selection (Moved back to Sidebar)
+    st.markdown("<h3 style='font-size:18px;'>📅 Select Date Range</h3>", unsafe_allow_html=True)
+    start_date = st.date_input("Start Date", datetime.date(2020, 1, 1))
+    end_date = st.date_input("End Date", datetime.date.today())
+
     # --- Market Trends (Only for Top Stocks) ---
     st.markdown("<h3 style='font-size:18px;'>🔥 Market Trends</h3>", unsafe_allow_html=True)
 
@@ -96,13 +101,21 @@ with st.sidebar:
 # --- Main Layout ---
 st.markdown(f"<h1 style='font-size:28px;'>📈 {ticker_display[ticker]} Stock Overview</h1>", unsafe_allow_html=True)
 
-# Timeframe Selection in the Middle
-timeframe = st.radio("Select Timeframe:", ["1M", "3M", "6M", "1Y", "5Y", "10Y", "ALL"], horizontal=True)
+# Timeframe Selection (Reversed Order)
+timeframe = st.radio(
+    "Select Timeframe:",
+    ["ALL", "10Y", "5Y", "1Y", "6M", "3M", "1M"],  # Reordered options
+    horizontal=True
+)
+
 
 # Fetch Stock Data
 @st.cache_data
 def get_stock_data(ticker):
-    df = stock_price[stock_price["ticker"] == ticker].sort_values("date").reset_index(drop=True)
+    df = stock_price[(stock_price["ticker"] == ticker) & 
+                     (stock_price["date"] >= pd.Timestamp(start_date)) & 
+                     (stock_price["date"] <= pd.Timestamp(end_date))]
+    df = df.sort_values("date").reset_index(drop=True)
     return df
 
 data = get_stock_data(ticker)
@@ -156,11 +169,68 @@ else:
 
     # --- Backtesting ---
     st.markdown("<h2 style='font-size:24px;'>📊 Backtesting Performance</h2>", unsafe_allow_html=True)
-    data["Signal"] = np.random.choice(["BUY", "HOLD", "SELL"], size=len(data))
-    data["Strategy Returns"] = np.where(data["Signal"] == "BUY", data["close"].pct_change(), 0).cumsum()
+    data["Strategy Returns"] = np.where(data["close"].pct_change() > 0, data["close"].pct_change(), 0).cumsum()
     data["Benchmark Returns"] = data["close"].pct_change().cumsum()
 
     fig = go.Figure()
     fig.add_trace(go.Scatter(x=data["date"], y=data["Strategy Returns"], mode="lines", name="AI Strategy", line=dict(color="green")))
     fig.add_trace(go.Scatter(x=data["date"], y=data["Benchmark Returns"], mode="lines", name="Benchmark", line=dict(color="red")))
     st.plotly_chart(fig, use_container_width=True)
+
+# --- Development Team ---
+st.markdown("""
+    <style>
+        .team-container {
+            text-align: center;
+            padding: 30px 0px;
+        }
+        .team-member {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 10px;
+        }
+        .team-img {
+            border-radius: 50%;
+            width: 100px; /* Smaller Image */
+            height: 100px;
+            object-fit: cover;
+            display: block;
+            margin: 0 auto;
+        }
+        .team-name {
+            font-size: 16px;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+        .team-role {
+            font-size: 14px;
+            color: #bbb;
+        }
+    </style>
+""", unsafe_allow_html=True)
+
+# Centered Title
+st.markdown("<h2 class='team-container'>👨‍💻 Development Team</h2>", unsafe_allow_html=True)
+
+team_data = [
+    {"name": "Peeranat Kongkjipipat", "role": "Business & Computer Science", "img": "./photo/Picture1.jpg"},
+    {"name": "Kulpatch Chananam", "role": "Computer Science & Economics", "img": "./photo/Picture2.jpg"},
+    {"name": "Nathan Juirnarongrit", "role": "Business & Computer Engineering", "img": "./photo/Picture3.jpg"},
+    {"name": "Chindanai Trakantannarong", "role": "Computer Science", "img": "./photo/Picture4.jpg"},
+]
+
+# Create 4 evenly spaced columns
+columns = st.columns(len(team_data))
+
+for col, member in zip(columns, team_data):
+    with col:
+        # Display Image using Streamlit method
+        st.image(member["img"], width=100)
+
+        # Centered Name & Role
+        st.markdown(f"<p class='team-name'>{member['name']}</p>", unsafe_allow_html=True)
+        st.markdown(f"<p class='team-role'>{member['role']}</p>", unsafe_allow_html=True)
+
