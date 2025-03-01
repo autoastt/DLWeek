@@ -5,7 +5,7 @@ import plotly.graph_objects as go
 import datetime
 
 # Load tickers and stock price data
-stock_df = pd.read_csv("./data/nasdaq100_tickers.csv")
+stock_df = pd.read_csv("./data/nasdaq100_tickers.csv").sort_values(by="Ticker")
 stock_price = pd.read_csv("./data/nasdaq100_stock_prices.csv", parse_dates=["date"])
 
 # Ensure the first unnamed index column is removed (if it exists)
@@ -28,11 +28,11 @@ st.set_page_config(page_title="ThorEMore - AI Trading Dashboard", layout="wide")
 with st.sidebar:
     st.markdown("<h2 style='font-size:20px;'>📊 Market Overview</h2>", unsafe_allow_html=True)
     st.markdown("<h3 style='font-size:18px;'>ThorEMore: AI-Powered Trading</h3>", unsafe_allow_html=True)
-    st.markdown("<p style='font-size:14px;'>This app provides real-time trading insights using AI-powered models (LSTM + Transformer + RL).</p>", unsafe_allow_html=True)
+    st.markdown("<p style='font-size:14px;'>This app provides real-time trading insights using AI-powered models (LSTMs + RL).</p>", unsafe_allow_html=True)
 
     # Stock Selection Dropdown
     st.markdown("<h3 style='font-size:18px;'>📌 Select Stock for Analysis</h3>", unsafe_allow_html=True)
-    ticker = st.selectbox("Choose a Stock:", tickers_list, format_func=lambda x: ticker_display[x])
+    selected_ticker = st.selectbox("Choose a Stock:", tickers_list, format_func=lambda x: ticker_display[x])
 
     # Date Selection (Moved back to Sidebar)
     st.markdown("<h3 style='font-size:18px;'>📅 Select Date Range</h3>", unsafe_allow_html=True)
@@ -99,7 +99,7 @@ with st.sidebar:
                 st.plotly_chart(fig, use_container_width=True)
 
 # --- Main Layout ---
-st.markdown(f"<h1 style='font-size:28px;'>📈 {ticker_display[ticker]} Stock Overview</h1>", unsafe_allow_html=True)
+st.markdown(f"<h1 style='font-size:28px;'>📈 {ticker_display[selected_ticker]} Stock Overview</h1>", unsafe_allow_html=True)
 
 # Timeframe Selection (Reversed Order)
 timeframe = st.radio(
@@ -118,7 +118,7 @@ def get_stock_data(ticker):
     df = df.sort_values("date").reset_index(drop=True)
     return df
 
-data = get_stock_data(ticker)
+data = get_stock_data(selected_ticker)
 
 # Filter data based on selected timeframe
 end_date = data["date"].max()
@@ -141,7 +141,7 @@ data = data[(data["date"] >= start_date) & (data["date"] <= end_date)]
 
 # Ensure data is valid
 if data.empty:
-    st.warning(f"⚠️ No valid data found for {ticker}. Try a different stock or date range.")
+    st.warning(f"⚠️ No valid data found for {selected_ticker}. Try a different stock or date range.")
 else:
     # --- Candlestick Chart ---
     fig = go.Figure()
@@ -157,7 +157,7 @@ else:
     fig.add_trace(go.Scatter(x=data["date"], y=data["SMA_50"], mode="lines", name="SMA 50", line=dict(color="blue", width=1)))
     fig.add_trace(go.Scatter(x=data["date"], y=data["SMA_200"], mode="lines", name="SMA 200", line=dict(color="orange", width=1)))
 
-    fig.update_layout(title=f"{ticker_display[ticker]} - Stock Price", xaxis_title="Date", yaxis_title="Price", xaxis_rangeslider_visible=False)
+    fig.update_layout(title=f"{ticker_display[selected_ticker]} - Stock Price", xaxis_title="Date", yaxis_title="Price", xaxis_rangeslider_visible=False)
     st.plotly_chart(fig, use_container_width=True)
 
     # --- Feature Engineering Indicators ---
@@ -229,7 +229,7 @@ for col, member in zip(columns, team_data):
     with col:
         # Display Image using Streamlit method
         st.image(member["img"], width=100)
-
+        
         # Centered Name & Role
         st.markdown(f"<p class='team-name'>{member['name']}</p>", unsafe_allow_html=True)
         st.markdown(f"<p class='team-role'>{member['role']}</p>", unsafe_allow_html=True)
