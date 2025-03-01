@@ -1,11 +1,26 @@
 import streamlit as st
 import pandas as pd
 import numpy as np
-import yfinance as yf
 import plotly.graph_objects as go
 import datetime
 
-# stock_df = pd.read_csv("./data/nasdaq100_tickers.csv.csv")
+# Load tickers and stock price data
+stock_df = pd.read_csv("./data/nasdaq100_tickers.csv")
+stock_price = pd.read_csv("./data/nasdaq100_stock_prices.csv", parse_dates=["date"])
+
+# Ensure the first unnamed index column is removed (if it exists)
+if stock_price.columns[0] == "Unnamed: 0":
+    stock_price = stock_price.drop(columns=["Unnamed: 0"])
+
+# Extract all tickers from the CSV for dropdown
+tickers_list = stock_df["Ticker"].tolist()
+
+# Keep fixed top stocks for sidebar graphs
+top_stocks = ["AAPL", "INTC", "MSFT", "GOOGL", "CSCO", "TSLA", "NVDA", "AMZN", "ON", "PYPL"]
+
+# Mapping tickers to company names
+ticker_display = {row.Ticker: f"{row.Ticker} - {row.Company}" for _, row in stock_df.iterrows()}
+
 # Set up Streamlit page
 st.set_page_config(page_title="ThorEMore - AI Trading Dashboard", layout="wide")
 
@@ -13,84 +28,84 @@ st.set_page_config(page_title="ThorEMore - AI Trading Dashboard", layout="wide")
 st.sidebar.header("ThorEMore: AI-Powered Trading")
 st.sidebar.markdown("This app provides real-time trading insights using AI-powered models (LSTM + Transformer + RL).")
 
-# Fixed list of tickers
-top_stocks = ["AAPL", "MSFT", "GOOGL", "TSLA", "NVDA"]
-
-# Sidebar: Stock Selection
+# Sidebar: Stock Selection (Dropdown now includes all tickers)
 st.sidebar.subheader("📌 Select Stock for Analysis")
-ticker = st.sidebar.selectbox("Choose a Stock:", top_stocks, index=0)
+ticker = st.sidebar.selectbox("Choose a Stock:", tickers_list, format_func=lambda x: ticker_display[x])
+
+# Date Selection
 start_date = st.sidebar.date_input("📅 Start Date", datetime.date(2020, 1, 1))
 end_date = st.sidebar.date_input("📅 End Date", datetime.date.today())
 
-# Function to Fetch Data
+# Function to Fetch Data from CSV
 @st.cache_data
 def get_stock_data(ticker, start, end):
-    df = yf.download(ticker, start=start, end=end)
+    df = stock_price[(stock_price["ticker"] == ticker) & 
+                     (stock_price["date"] >= pd.Timestamp(start)) & 
+                     (stock_price["date"] <= pd.Timestamp(end))]
+    df = df.sort_values("date").reset_index(drop=True)  # Ensure proper ordering & remove index column
     return df
 
 # Load Stock Data
-st.subheader(f"📊 Stock Data for {ticker}")
+st.subheader(f"📊 Stock Data for {ticker_display[ticker]}")
 data = get_stock_data(ticker, start_date, end_date)
-data.columns = data.columns.get_level_values(0)
 
 # Ensure data is valid
-if data.empty or "Close" not in data.columns:
+if data.empty:
     st.warning(f"⚠️ No valid data found for {ticker}. Try a different stock or date range.")
 else:
-    # Display Latest 5 Days
-    st.dataframe(data.tail(5))
+    # Display Latest 5 Days (without extra index column)
+    st.dataframe(data)
 
     # Plot Closing Price
     fig = go.Figure()
-    fig.add_trace(go.Scatter(x=data.index, y=data["Close"], mode="lines", name="Close Price", line=dict(color="blue")))
-    fig.update_layout(title=f"📈 Closing Price of {ticker}", xaxis_title="Date", yaxis_title="Price")
+    fig.add_trace(go.Scatter(x=data["date"], y=data["close"], mode="lines", name="Close Price", line=dict(color="blue")))
+    fig.update_layout(title=f"📈 Closing Price of {ticker_display[ticker]}", xaxis_title="Date", yaxis_title="Price")
     st.plotly_chart(fig)
 
     # Feature Engineering (Technical Indicators)
-    data["Returns"] = data["Close"].pct_change()
-    data["SMA_50"] = data["Close"].rolling(window=50).mean()
-    data["SMA_200"] = data["Close"].rolling(window=200).mean()
+    data["Returns"] = data["close"].pct_change()
+    data["SMA_50"] = data["close"].rolling(window=50).mean()
+    data["SMA_200"] = data["close"].rolling(window=200).mean()
     data.dropna(inplace=True)
+
+    # Remove extra index column from processed data
+    data.reset_index(drop=True, inplace=True)
 
     # Show Processed Data
     st.subheader("🛠 Feature Engineering & Indicators")
-    st.dataframe(data[["Close", "SMA_50", "SMA_200", "Returns"]].tail(10))
+    st.dataframe(data[["date", "close", "SMA_50", "SMA_200", "Returns"]].tail(10))
 
     # AI Trading Model Predictions (Mocked)
     st.subheader("🤖 AI Trading Model Predictions")
     mock_signals = np.random.choice(["BUY", "HOLD", "SELL"], size=len(data))
     data["Signal"] = mock_signals
-    st.dataframe(data[["Close", "Signal"]].tail(10))
+    st.dataframe(data[["date", "close", "Signal"]].tail(10))
 
-    # Backtesting (Cumulative Returns)
+    # **Backtesting (Cumulative Returns)**
     st.subheader("📊 Backtesting Performance")
     data["Strategy Returns"] = np.where(data["Signal"] == "BUY", data["Returns"], 0).cumsum()
     data["Benchmark Returns"] = data["Returns"].cumsum()
 
     # Plot Backtest Results
     fig = go.Figure()
-    fig.add_trace(go.Scatter(x=data.index, y=data["Strategy Returns"], mode="lines", name="AI Strategy", line=dict(color="green")))
-    fig.add_trace(go.Scatter(x=data.index, y=data["Benchmark Returns"], mode="lines", name="Nasdaq-100 Benchmark", line=dict(color="red")))
+    fig.add_trace(go.Scatter(x=data["date"], y=data["Strategy Returns"], mode="lines", name="AI Strategy", line=dict(color="green")))
+    fig.add_trace(go.Scatter(x=data["date"], y=data["Benchmark Returns"], mode="lines", name="Nasdaq-100 Benchmark", line=dict(color="red")))
     fig.update_layout(title="Cumulative Returns Comparison", xaxis_title="Date", yaxis_title="Cumulative Returns")
     st.plotly_chart(fig)
 
-# Sidebar: Market Trends
+# Sidebar: Market Trends (Only for Top Stocks)
 st.sidebar.subheader("🔥 Market Trends")
 
 @st.cache_data
 def fetch_stock_info(tickers):
     stock_info = {}
     for ticker in tickers:
-        df = yf.download(ticker, period="7d", interval="1d")
+        df = stock_price[stock_price["ticker"] == ticker].sort_values("date")
 
-        # Fix MultiIndex issue if present
-        if isinstance(df.columns, pd.MultiIndex):
-            df.columns = df.columns.get_level_values(0)  # Flatten MultiIndex
-
-        if df.empty or "Close" not in df.columns:
+        if df.empty:
             continue  # Skip if no valid data
 
-        valid_data = df["Close"].dropna()
+        valid_data = df["close"].dropna()
         if len(valid_data) < 2:
             continue  # Skip if not enough data
 
@@ -105,10 +120,10 @@ def fetch_stock_info(tickers):
         }
     return stock_info
 
-# Fetch stock data for sidebar
+# Fetch stock data for sidebar graphs (Only for Top Stocks)
 stock_data = fetch_stock_info(top_stocks)
 
-# Display Stock Info in Sidebar
+# Display Stock Info in Sidebar (Only for Top Stocks)
 for ticker, info in stock_data.items():
     if "latest_price" in info:
         latest_price = float(info["latest_price"])  # Ensure it's a float
@@ -122,12 +137,12 @@ for ticker, info in stock_data.items():
         change_box = f"<div style='background-color:{change_color}; color:white; padding:5px; border-radius:5px; display:inline-block;'> {price_change:+.2f} </div>"
 
         # 🔹 Display stock symbol and latest price
-        st.sidebar.markdown(f"### {ticker} - ${formatted_price}")
+        st.sidebar.markdown(f"### {ticker_display[ticker]} - ${formatted_price}")
         st.sidebar.markdown(change_box, unsafe_allow_html=True)
 
         # ✅ Sidebar Mini Graph (Ensure valid data)
         if len(info["data"]) > 3:
-            last_10_days = info["data"].iloc[-100:]
+            last_10_days = info["data"].iloc[-20:]
             fig = go.Figure()
             fig.add_trace(go.Scatter(
                 x=last_10_days.index,
@@ -144,17 +159,6 @@ for ticker, info in stock_data.items():
             st.sidebar.plotly_chart(fig, use_container_width=True)
         else:
             st.sidebar.warning(f"⚠️ Not enough data to plot {ticker}.")
-
-# Debugging Section
-st.subheader("📊 Data Preview")
-if not data.empty:
-    st.write(data.head())
-
-    # Verify Close Prices
-    if "Close" in data.columns:
-        st.success(f"✅ Data looks good! {data['Close'].notna().sum()} valid Close prices.")
-    else:
-        st.error("❌ 'Close' column not found! Data might be corrupted.")
 
 # Footer
 st.sidebar.markdown("---")
