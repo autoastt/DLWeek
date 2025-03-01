@@ -5,7 +5,7 @@ import yfinance as yf
 import plotly.graph_objects as go
 import datetime
 
-stock_df = pd.read_csv("./data/nasdaq100_tickers.csv.csv")
+# stock_df = pd.read_csv("./data/nasdaq100_tickers.csv.csv")
 # Set up Streamlit page
 st.set_page_config(page_title="ThorEMore - AI Trading Dashboard", layout="wide")
 
