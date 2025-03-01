@@ -1,5 +1,6 @@
 yfinance 
 lxml
 pandas
-pandas_ta
+ta
 numpy
+plotly
