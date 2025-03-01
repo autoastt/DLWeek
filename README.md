@@ -1,6 +1,6 @@
 # DLWeek - ThorEMore
 
-![logo](./assets/ThorEMore.svg)
+[![logo](./assets/ThorEMore.svg)](https://thoremore.streamlit.app/)
 
 [![python](https://img.shields.io/badge/Python-FFD43B?style=for-the-badge&logo=python&logoColor=blue)](https://www.python.org/)
 [![tf](https://img.shields.io/badge/TensorFlow-FF6F00?style=for-the-badge&logo=tensorflow&logoColor=white)](https://www.tensorflow.org/)
@@ -12,6 +12,10 @@
 ---
 ## Overview
 ThorEMore is an AI-powered adaptive trading system using Reinforcement Learning integrated with LSTMs to predict market trends, optimize portfolios, and adapt to changing conditions. This model will focus on NASDAQ100 market index.
+
+* Website: https://thoremore.streamlit.app/
+* Slides: https://docs.google.com/presentation/d/1dGC1TDEB-zQeA7-Jm0YhEXNxFi76WEbceIRHIoKPaAU/edit?usp=sharing
+* Demo: https://youtu.be/WrmupiFOZH4
 
 ### What Makes Our Approach Different?
 **Adaptive Learning Models:**
