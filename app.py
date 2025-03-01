@@ -26,9 +26,9 @@ st.set_page_config(page_title="ThorEMore - AI Trading Dashboard", layout="wide")
 
 # --- Sidebar Layout ---
 with st.sidebar:
-    st.markdown("<h2 style='font-size:20px;'>📊 Market Overview</h2>", unsafe_allow_html=True)
-    st.markdown("<h3 style='font-size:18px;'>ThorEMore: AI-Powered Trading</h3>", unsafe_allow_html=True)
-    st.markdown("<p style='font-size:14px;'>This app provides real-time trading insights using AI-powered models (LSTMs + RL).</p>", unsafe_allow_html=True)
+    # st.markdown("<h2 style='font-size:20px;'>📊 Market Overview</h2>", unsafe_allow_html=True)
+    st.markdown("<h2 style='font-size:22px;'>⚙️ Settings</h3>", unsafe_allow_html=True)
+    # st.markdown("<p style='font-size:14px;'>Optimizing Adaptive Reinforcement Learning for Stock Trading: Smaller and Faster Models</p>", unsafe_allow_html=True)
 
     # Stock Selection Dropdown
     st.markdown("<h3 style='font-size:18px;'>📌 Select Stock for Analysis</h3>", unsafe_allow_html=True)
@@ -99,6 +99,9 @@ with st.sidebar:
                 st.plotly_chart(fig, use_container_width=True)
 
 # --- Main Layout ---
+st.markdown("<h1 style='font-size:36px; padding-top:0px'>⚡️ ThorEMore</h1>", unsafe_allow_html=True)
+st.markdown("<p style='font-size:16px;'>Optimizing Adaptive Reinforcement Learning for Stock Trading: Smaller and Faster Models</p>", unsafe_allow_html=True)
+
 st.markdown(f"<h1 style='font-size:28px;'>📈 {ticker_display[selected_ticker]} Stock Overview</h1>", unsafe_allow_html=True)
 
 # Timeframe Selection (Reversed Order)
@@ -161,7 +164,7 @@ else:
     st.plotly_chart(fig, use_container_width=True)
 
     # --- Feature Engineering Indicators ---
-    st.markdown("<h2 style='font-size:24px;'>🔍 Feature Engineering & Indicators</h2>", unsafe_allow_html=True)
+    st.markdown("<h2 style='font-size:24px;'>🔍 Percentage Change</h2>", unsafe_allow_html=True)
     data["Returns"] = data["close"].pct_change()
     fig = go.Figure()
     fig.add_trace(go.Scatter(x=data["date"], y=data["Returns"], mode="lines", name="Returns", line=dict(color="purple")))
@@ -169,6 +172,21 @@ else:
 
     # --- Backtesting ---
     st.markdown("<h2 style='font-size:24px;'>📊 Backtesting Performance</h2>", unsafe_allow_html=True)
+    st.write("""
+    **💡 Metrics Explanation**
+    - **Sharpe Ratio**: Measures risk-adjusted return. A higher value indicates better risk-adjusted performance.
+    - **Drawdown**: Represents the maximum drop from a peak before recovery, indicating downside risk.
+    """)
+    
+    st.markdown("<h3 style='font-size:20px;'>Dual Moving Average Crossover Strategy</h3>", unsafe_allow_html=True)
+    st.image(f'assets/dma/{selected_ticker}.png')
+    
+    dma = pd.read_csv("./assets/dma/results.csv")
+    dma = dma.loc[dma['ticker'] == selected_ticker, ['sharpe', 'drawdown']].T.rename(index={"sharpe": "Sharpe Ratio", "drawdown": "Drawdown"})
+    dma.columns = ["Value"]
+    st.dataframe(dma, use_container_width=True)
+    
+    st.markdown("<h3 style='font-size:20px;'>Our Trading Strategy</h3>", unsafe_allow_html=True)
     data["Strategy Returns"] = np.where(data["close"].pct_change() > 0, data["close"].pct_change(), 0).cumsum()
     data["Benchmark Returns"] = data["close"].pct_change().cumsum()
 
@@ -213,7 +231,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # Centered Title
-st.markdown("<h2 class='team-container'>👨‍💻 Development Team</h2>", unsafe_allow_html=True)
+st.markdown("<h2 style='font-size:24px;'>👨‍💻 Development Team</h2>", unsafe_allow_html=True)
 
 team_data = [
     {"name": "Peeranat Kongkjipipat", "role": "Business & Computer Science", "img": "./photo/Picture1.jpg"},
