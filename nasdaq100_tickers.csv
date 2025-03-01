@@ -1,0 +1,102 @@
+Ticker,Company,Sector
+ADBE,Adobe Inc.,Information Technology
+AMD,Advanced Micro Devices,Information Technology
+ABNB,Airbnb,Consumer Discretionary
+GOOGL,Alphabet Inc. (Class A),Communication Services
+GOOG,Alphabet Inc. (Class C),Communication Services
+AMZN,Amazon,Consumer Discretionary
+AEP,American Electric Power,Utilities
+AMGN,Amgen,Health Care
+ADI,Analog Devices,Information Technology
+ANSS,Ansys,Information Technology
+AAPL,Apple Inc.,Information Technology
+AMAT,Applied Materials,Information Technology
+APP,AppLovin,Information Technology
+ARM,Arm Holdings,Information Technology
+ASML,ASML Holding,Information Technology
+AZN,AstraZeneca,Health Care
+TEAM,Atlassian,Information Technology
+ADSK,Autodesk,Information Technology
+ADP,Automatic Data Processing,Industrials
+AXON,Axon Enterprise,Industrials
+BKR,Baker Hughes,Energy
+BIIB,Biogen,Health Care
+BKNG,Booking Holdings,Consumer Discretionary
+AVGO,Broadcom,Information Technology
+CDNS,Cadence Design Systems,Information Technology
+CDW,CDW Corporation,Information Technology
+CHTR,Charter Communications,Communication Services
+CTAS,Cintas,Industrials
+CSCO,Cisco,Information Technology
+CCEP,Coca-Cola Europacific Partners,Consumer Staples
+CTSH,Cognizant,Information Technology
+CMCSA,Comcast,Communication Services
+CEG,Constellation Energy,Utilities
+CPRT,Copart,Industrials
+CSGP,CoStar Group,Real Estate
+COST,Costco,Consumer Staples
+CRWD,CrowdStrike,Information Technology
+CSX,CSX Corporation,Industrials
+DDOG,Datadog,Information Technology
+DXCM,DexCom,Health Care
+FANG,Diamondback Energy,Energy
+DASH,DoorDash,Consumer Discretionary
+EA,Electronic Arts,Communication Services
+EXC,Exelon,Utilities
+FAST,Fastenal,Industrials
+FTNT,Fortinet,Information Technology
+GEHC,GE HealthCare,Health Care
+GILD,Gilead Sciences,Health Care
+GFS,GlobalFoundries,Information Technology
+HON,Honeywell,Industrials
+IDXX,Idexx Laboratories,Health Care
+INTC,Intel,Information Technology
+INTU,Intuit,Information Technology
+ISRG,Intuitive Surgical,Health Care
+KDP,Keurig Dr Pepper,Consumer Staples
+KLAC,KLA Corporation,Information Technology
+KHC,Kraft Heinz,Consumer Staples
+LRCX,Lam Research,Information Technology
+LIN,Linde plc,Materials
+LULU,Lululemon Athletica,Consumer Discretionary
+MAR,Marriott International,Consumer Discretionary
+MRVL,Marvell Technology,Information Technology
+MELI,MercadoLibre,Consumer Discretionary
+META,Meta Platforms,Communication Services
+MCHP,Microchip Technology,Information Technology
+MU,Micron Technology,Information Technology
+MSFT,Microsoft,Information Technology
+MSTR,MicroStrategy,Information Technology
+MDLZ,Mondelez International,Consumer Staples
+MDB,MongoDB Inc.,Information Technology
+MNST,Monster Beverage,Consumer Staples
+NFLX,"Netflix, Inc.",Communication Services
+NVDA,Nvidia,Information Technology
+NXPI,NXP Semiconductors,Information Technology
+ORLY,O'Reilly Automotive,Consumer Discretionary
+ODFL,Old Dominion Freight Line,Industrials
+ON,Onsemi,Information Technology
+PCAR,Paccar,Industrials
+PLTR,Palantir Technologies,Information Technology
+PANW,Palo Alto Networks,Information Technology
+PAYX,Paychex,Industrials
+PYPL,PayPal,Financials
+PDD,PDD Holdings,Consumer Discretionary
+PEP,PepsiCo,Consumer Staples
+QCOM,Qualcomm,Information Technology
+REGN,Regeneron Pharmaceuticals,Health Care
+ROP,Roper Technologies,Information Technology
+ROST,Ross Stores,Consumer Discretionary
+SBUX,Starbucks,Consumer Discretionary
+SNPS,Synopsys,Information Technology
+TTWO,Take-Two Interactive,Communication Services
+TMUS,T-Mobile US,Communication Services
+TSLA,"Tesla, Inc.",Consumer Discretionary
+TXN,Texas Instruments,Information Technology
+TTD,Trade Desk (The),Communication Services
+VRSK,Verisk Analytics,Industrials
+VRTX,Vertex Pharmaceuticals,Health Care
+WBD,Warner Bros. Discovery,Communication Services
+WDAY,"Workday, Inc.",Information Technology
+XEL,Xcel Energy,Utilities
+ZS,Zscaler,Information Technology
