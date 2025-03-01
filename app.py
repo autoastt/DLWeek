@@ -172,11 +172,6 @@ else:
 
     # --- Backtesting ---
     st.markdown("<h2 style='font-size:24px;'>📊 Backtesting Performance</h2>", unsafe_allow_html=True)
-    st.write("""
-    **💡 Metrics Explanation**
-    - **Sharpe Ratio**: Measures risk-adjusted return. A higher value indicates better risk-adjusted performance.
-    - **Drawdown**: Represents the maximum drop from a peak before recovery, indicating downside risk.
-    """)
     
     st.markdown("<h3 style='font-size:20px;'>Dual Moving Average Crossover Strategy</h3>", unsafe_allow_html=True)
     st.image(f'assets/dma/{selected_ticker}.png')
@@ -185,15 +180,21 @@ else:
     dma = dma.loc[dma['ticker'] == selected_ticker, ['sharpe', 'drawdown']].T.rename(index={"sharpe": "Sharpe Ratio", "drawdown": "Drawdown"})
     dma.columns = ["Value"]
     st.dataframe(dma, use_container_width=True)
+    st.write("""
+    **💡 Metrics Explanation**
+    - **Sharpe Ratio**: Measures risk-adjusted return. A higher value indicates better risk-adjusted performance.
+    - **Drawdown**: Represents the maximum drop from a peak before recovery, indicating downside risk.
+    """)
     
     st.markdown("<h3 style='font-size:20px;'>Our Trading Strategy</h3>", unsafe_allow_html=True)
+    st.image("results/trading_bot/performance.png")
     data["Strategy Returns"] = np.where(data["close"].pct_change() > 0, data["close"].pct_change(), 0).cumsum()
     data["Benchmark Returns"] = data["close"].pct_change().cumsum()
 
     fig = go.Figure()
     fig.add_trace(go.Scatter(x=data["date"], y=data["Strategy Returns"], mode="lines", name="AI Strategy", line=dict(color="green")))
     fig.add_trace(go.Scatter(x=data["date"], y=data["Benchmark Returns"], mode="lines", name="Benchmark", line=dict(color="red")))
-    st.plotly_chart(fig, use_container_width=True)
+    # st.plotly_chart(fig, use_container_width=True)
 
 # --- Development Team ---
 st.markdown("""
