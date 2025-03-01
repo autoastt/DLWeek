@@ -1,0 +1,2 @@
+model_checkpoint_path: "ADBE_model"
+all_model_checkpoint_paths: "ADBE_model"

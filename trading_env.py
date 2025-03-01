@@ -77,7 +77,7 @@ class DataSource:
         #                ['adj_close', 'adj_volume', 'adj_low', 'adj_high']]
         #           .dropna()
         #           .sort_index())
-        df = pd.read_csv('nasdaq100_stock_prices_plus_features.csv')
+        df = pd.read_csv('../nasdaq100_stock_prices_plus_features.csv')
         df = df[df['ticker'] == self.ticker]
 
         base_cols = ['open', 'close', 'high', 'low', 'volume', 'month']
@@ -262,11 +262,9 @@ class TradingEnvironment(gym.Env):
         """Returns state observation, reward, done and info"""
         assert self.action_space.contains(action), '{} {} invalid'.format(action, type(action))
         observation, done = self.data_source.take_step()
-        print(f'Theese is a action{action}')
         reward, info = self.simulator.take_step(action=action,
                                                 market_return=observation[0])
-        print(f'Theese is a action line2{action}')
-        return observation, reward, done, info
+        return observation, reward, done, False, info
 
     def reset(self):
         """Resets DataSource and TradingSimulator; returns first observation"""
